@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -8,110 +7,529 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 <style>
-/* (same styles as your original — unchanged) */
+  :root {
+    --rose:    #C9537A;
+    --blush:   #F7D6E3;
+    --petal:   #FDF0F5;
+    --deep:    #4A1B35;
+    --champagne: #F5E6D0;
+    --gold:    #C4965A;
+    --cream:   #FFFAF7;
+    --muted:   #9B7A8C;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    color: var(--deep);
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Decorative background petals */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -120px; right: -120px;
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, #F7D6E3 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -100px; left: -100px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, #F5E6D0 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .logo-ring {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--rose), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 18px;
+    font-size: 30px;
+  }
+  .header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--deep);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .header p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+  .header .greeting {
+    font-size: 1.05rem;
+    color: var(--rose);
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+
+  /* Divider */
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 24px 0;
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--blush), transparent);
+  }
+  .divider span { font-size: 16px; }
+
+  /* Card */
+  .card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 32px 28px;
+    margin-bottom: 16px;
+    border: 1px solid var(--blush);
+    box-shadow: 0 2px 20px rgba(201,83,122,0.06);
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--rose), var(--gold), var(--rose));
+  }
+
+  .q-num {
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .q-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--deep);
+    margin-bottom: 16px;
+    line-height: 1.4;
+  }
+
+  /* Pill choices */
+  .pills {
+    display: flex; flex-wrap: wrap; gap: 10px;
+  }
+  .pill input[type="radio"],
+  .pill input[type="checkbox"] { display: none; }
+  .pill label {
+    display: block;
+    padding: 9px 20px;
+    border-radius: 40px;
+    border: 1.5px solid var(--blush);
+    color: var(--muted);
+    font-size: 0.88rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--petal);
+    user-select: none;
+  }
+  .pill input:checked + label {
+    background: var(--rose);
+    border-color: var(--rose);
+    color: #fff;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(201,83,122,0.3);
+  }
+  .pill label:hover {
+    border-color: var(--rose);
+    color: var(--rose);
+  }
+
+  /* Star rating */
+  .stars {
+    display: flex; gap: 8px; flex-direction: row-reverse;
+    justify-content: flex-end;
+  }
+  .stars input[type="radio"] { display: none; }
+  .stars label {
+    font-size: 2rem;
+    cursor: pointer;
+    color: #ddd;
+    transition: color 0.15s;
+    line-height: 1;
+  }
+  .stars input:checked ~ label,
+  .stars label:hover,
+  .stars label:hover ~ label {
+    color: var(--gold);
+  }
+  /* Fix star hover direction */
+  .stars { flex-direction: row; }
+  .stars label { direction: ltr; }
+  .stars:hover label { color: var(--gold); }
+  .stars label:hover ~ label { color: #ddd; }
+  .stars input:checked ~ label { color: #ddd; }
+  .stars input:checked + label,
+  .stars input:checked + label ~ label { color: var(--gold); }
+
+  /* Textarea */
+  textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1.5px solid var(--blush);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    color: var(--deep);
+    background: var(--petal);
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s;
+    line-height: 1.6;
+  }
+  textarea::placeholder { color: #C9A8B8; }
+  textarea:focus { border-color: var(--rose); background: #fff; }
+
+  /* Submit */
+  .submit-btn {
+    display: block; width: 100%;
+    padding: 17px;
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(135deg, var(--rose) 0%, #A8365C 100%);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    margin-top: 8px;
+    transition: opacity 0.2s, transform 0.15s;
+    box-shadow: 0 6px 20px rgba(201,83,122,0.35);
+  }
+  .submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+  /* Thank you screen */
+  .thankyou {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .thankyou .big-icon { font-size: 4rem; margin-bottom: 20px; }
+  .thankyou h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--deep);
+    margin-bottom: 12px;
+  }
+  .thankyou p { color: var(--muted); font-size: 0.95rem; line-height: 1.7; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 32px;
+    font-size: 0.78rem;
+    color: #C9A8B8;
+    font-weight: 300;
+  }
+
+  /* Validation error */
+  .err-msg {
+    color: #C9537A;
+    font-size: 0.8rem;
+    margin-top: 6px;
+    display: none;
+  }
+  .has-error .err-msg { display: block; }
+  .has-error .pill label, .has-error textarea { border-color: #C9537A !important; }
+
+  @media (max-width: 480px) {
+    .wrap { padding: 24px 16px 60px; }
+    .card { padding: 24px 20px; }
+    .header h1 { font-size: 1.75rem; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-<!-- Header -->
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-ring">🌸</div>
+    <p class="greeting">Hi lovely 🌸</p>
+    <h1>Share Your Experience</h1>
+    <p>Help us grow by answering a few quick questions.<br/>Your response is completely anonymous 💕</p>
+  </div>
 
-<div class="header">
-  <div class="logo-ring">🌸</div>
-  <p class="greeting">Hi lovely 🌸</p>
-  <h1>Share Your Experience</h1>
-  <p>Help us grow by answering a few quick questions.<br/>Your response is completely anonymous 💕</p>
-</div>
+  <!-- Survey Form -->
+  <form id="survey" novalidate>
 
-<form id="survey" novalidate>
+    <!-- Q1: Service -->
+    <div class="card" id="card-1">
+      <div class="q-num">Question 1</div>
+      <div class="q-label">Which service did you receive?</div>
+      <div class="pills">
+        <div class="pill"><input type="radio" name="service" id="s-hair" value="Hair"/><label for="s-hair">✂️ Hair</label></div>
+        <div class="pill"><input type="radio" name="service" id="s-nails" value="Nails"/><label for="s-nails">💅 Nails</label></div>
+        <div class="pill"><input type="radio" name="service" id="s-makeup" value="Makeup"/><label for="s-makeup">💄 Makeup</label></div>
+        <div class="pill"><input type="radio" name="service" id="s-other" value="Other"/><label for="s-other">✨ Other</label></div>
+      </div>
+      <div class="err-msg">Please select a service</div>
+    </div>
 
-<!-- (ALL your existing form content stays EXACTLY the same) -->
+    <!-- Q2: Happy -->
+    <div class="card" id="card-2">
+      <div class="q-num">Question 2</div>
+      <div class="q-label">Are you happy with your service?</div>
+      <div class="pills">
+        <div class="pill"><input type="radio" name="happy" id="h-yes" value="Yes"/><label for="h-yes">😊 Yes, absolutely!</label></div>
+        <div class="pill"><input type="radio" name="happy" id="h-no" value="No"/><label for="h-no">😔 Not quite</label></div>
+      </div>
+      <div class="err-msg">Please select an option</div>
+    </div>
 
-<button type="submit" class="submit-btn" id="submit-btn">
-  Submit My Feedback 💕
-</button>
+    <!-- Q3: Rating -->
+    <div class="card" id="card-3">
+      <div class="q-num">Question 3</div>
+      <div class="q-label">Rate your overall experience</div>
+      <div class="stars">
+        <div class="pill"><input type="radio" name="rating" id="r5" value="5"/><label for="r5" title="5 stars">★</label></div>
+        <div class="pill"><input type="radio" name="rating" id="r4" value="4"/><label for="r4" title="4 stars">★</label></div>
+        <div class="pill"><input type="radio" name="rating" id="r3" value="3"/><label for="r3" title="3 stars">★</label></div>
+        <div class="pill"><input type="radio" name="rating" id="r2" value="2"/><label for="r2" title="2 stars">★</label></div>
+        <div class="pill"><input type="radio" name="rating" id="r1" value="1"/><label for="r1" title="1 star">★</label></div>
+      </div>
+      <div style="margin-top:10px; font-size:0.82rem; color:var(--muted);">Tap a star — 1 = Poor, 5 = Amazing 💫</div>
+      <div class="err-msg">Please give a rating</div>
+    </div>
 
-</form>
+    <!-- Q4: Clean -->
+    <div class="card" id="card-4">
+      <div class="q-num">Question 4</div>
+      <div class="q-label">Was our salon clean &amp; comfortable?</div>
+      <div class="pills">
+        <div class="pill"><input type="radio" name="clean" id="c-yes" value="Yes"/><label for="c-yes">✅ Yes</label></div>
+        <div class="pill"><input type="radio" name="clean" id="c-no" value="No"/><label for="c-no">❌ No</label></div>
+      </div>
+      <div class="err-msg">Please select an option</div>
+    </div>
 
-<div class="thankyou" id="thankyou">
-  <div class="big-icon">🌸</div>
-  <h2>Thank you so much!</h2>
-  <p>Your feedback means the world to us.<br/>
-  We appreciate you taking the time to help us grow.<br/><br/>
-  See you at your next appointment 💕</p>
-</div>
+    <!-- Q5: Staff -->
+    <div class="card" id="card-5">
+      <div class="q-num">Question 5</div>
+      <div class="q-label">Was our staff friendly &amp; welcoming?</div>
+      <div class="pills">
+        <div class="pill"><input type="radio" name="staff" id="st-yes" value="Yes"/><label for="st-yes">✅ Yes, very!</label></div>
+        <div class="pill"><input type="radio" name="staff" id="st-no" value="No"/><label for="st-no">❌ Not really</label></div>
+      </div>
+      <div class="err-msg">Please select an option</div>
+    </div>
 
-<div class="footer">Lindz Beauty · This survey is 100% anonymous</div>
+    <!-- Q6: Return -->
+    <div class="card" id="card-6">
+      <div class="q-num">Question 6</div>
+      <div class="q-label">Would you come back again?</div>
+      <div class="pills">
+        <div class="pill"><input type="radio" name="return" id="ret-yes" value="Yes"/><label for="ret-yes">💕 Definitely!</label></div>
+        <div class="pill"><input type="radio" name="return" id="ret-maybe" value="Maybe"/><label for="ret-maybe">🤔 Maybe</label></div>
+        <div class="pill"><input type="radio" name="return" id="ret-no" value="No"/><label for="ret-no">😔 Probably not</label></div>
+      </div>
+      <div class="err-msg">Please select an option</div>
+    </div>
+
+    <!-- Q7: Liked -->
+    <div class="card">
+      <div class="q-num">Question 7</div>
+      <div class="q-label">What did you like most? 💬</div>
+      <textarea name="liked" id="liked" rows="3" placeholder="Tell us what made you smile…"></textarea>
+    </div>
+
+    <!-- Q8: Improve -->
+    <div class="card">
+      <div class="q-num">Question 8</div>
+      <div class="q-label">What can we do better? 🌱</div>
+      <textarea name="improve" id="improve" rows="3" placeholder="We'd love to hear your honest thoughts…"></textarea>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submit-btn">
+      Submit My Feedback 💕
+    </button>
+
+  </form>
+
+  <!-- Thank You -->
+  <div class="thankyou" id="thankyou">
+    <div class="big-icon">🌸</div>
+    <h2>Thank you so much!</h2>
+    <p>Your feedback means the world to us.<br/>
+    We appreciate you taking the time to help us grow.<br/><br/>
+    See you at your next appointment 💕</p>
+  </div>
+
+  <div class="footer">Lindz Beauty · This survey is 100% anonymous</div>
 </div>
 
 <script>
-const form = document.getElementById('survey');
-const thankyou = document.getElementById('thankyou');
-const btn = document.getElementById('submit-btn');
+  const form = document.getElementById('survey');
+  const thankyou = document.getElementById('thankyou');
+  const btn = document.getElementById('submit-btn');
 
-// ✅ YOUR FORM ID IS NOW SET
-const FORMSPREE_ID = 'xaqlvpby';
+  // Star rating — standalone (not pills)
+  const starInputs = document.querySelectorAll('input[name="rating"]');
+  const starLabels = document.querySelectorAll('#card-3 label');
 
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
+  starLabels.forEach((label, i) => {
+    label.style.fontSize = '2.2rem';
+    label.style.cursor = 'pointer';
+    label.style.color = '#ddd';
+    label.style.padding = '0 3px';
+    label.style.transition = 'color 0.15s';
+  });
 
-  const required = ['service','happy','rating','clean','staff','return'];
-  let valid = true;
+  starInputs.forEach((input, i) => {
+    input.addEventListener('change', () => updateStars());
+  });
+  starLabels.forEach((label, i) => {
+    label.addEventListener('mouseenter', () => highlightStars(starInputs.length - 1 - i));
+    label.addEventListener('mouseleave', () => updateStars());
+  });
 
-  required.forEach((name, idx) => {
-    const checked = form.querySelector(`input[name="${name}"]:checked`);
-    const cardId = `card-${idx + 1}`;
-    const card = document.getElementById(cardId);
+  function highlightStars(upTo) {
+    starLabels.forEach((lbl, idx) => {
+      lbl.style.color = (starInputs.length - 1 - idx) <= upTo ? '#C4965A' : '#ddd';
+    });
+  }
 
+  function updateStars() {
+    const checked = document.querySelector('input[name="rating"]:checked');
     if (!checked) {
-      card.classList.add('has-error');
-      valid = false;
-    } else {
-      card.classList.remove('has-error');
+      starLabels.forEach(l => l.style.color = '#ddd');
+      return;
+    }
+    const val = parseInt(checked.value);
+    starLabels.forEach((lbl, idx) => {
+      const starVal = starInputs.length - idx;
+      lbl.style.color = starVal <= val ? '#C4965A' : '#ddd';
+    });
+  }
+
+  // ---- FORMSPREE SUBMIT ----
+  // SETUP: Replace 'YOUR_FORM_ID' below with your Formspree form ID.
+  // 1. Go to https://formspree.io and sign up free
+  // 2. Create a new form — they'll give you a form ID like "xpwzabcd"
+  // 3. Paste it below and you'll receive all survey responses to your email!
+  const FORMSPREE_ID = 'Yxaqlvpby';
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Validate required radio groups
+    const required = ['service','happy','rating','clean','staff','return'];
+    let valid = true;
+
+    required.forEach((name, idx) => {
+      const checked = form.querySelector(`input[name="${name}"]:checked`);
+      const cardId = idx < 6 ? `card-${idx + 1}` : null;
+      const card = cardId ? document.getElementById(cardId) : null;
+      if (!checked) {
+        if (card) card.classList.add('has-error');
+        valid = false;
+      } else {
+        if (card) card.classList.remove('has-error');
+      }
+    });
+
+    if (!valid) {
+      const firstErr = document.querySelector('.has-error');
+      if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    const data = {
+      service:  form.querySelector('input[name="service"]:checked')?.value,
+      happy:    form.querySelector('input[name="happy"]:checked')?.value,
+      rating:   form.querySelector('input[name="rating"]:checked')?.value,
+      clean:    form.querySelector('input[name="clean"]:checked')?.value,
+      staff:    form.querySelector('input[name="staff"]:checked')?.value,
+      return:   form.querySelector('input[name="return"]:checked')?.value,
+      liked:    document.getElementById('liked').value.trim() || '—',
+      improve:  document.getElementById('improve').value.trim() || '—',
+      submitted_at: new Date().toLocaleString('en-ZA', { timeZone: 'Africa/Mbabane' })
+    };
+
+    // If no Formspree ID yet, just show thank you
+    if (FORMSPREE_ID === 'YOUR_FORM_ID') {
+      showThankyou();
+      return;
+    }
+
+    try {
+      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        showThankyou();
+      } else {
+        btn.disabled = false;
+        btn.textContent = 'Submit My Feedback 💕';
+        alert('Oops! Something went wrong. Please try again 💕');
+      }
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = 'Submit My Feedback 💕';
+      alert('Could not connect. Please check your internet and try again 💕');
     }
   });
 
-  if (!valid) return;
-
-  btn.disabled = true;
-  btn.textContent = 'Sending…';
-
-  const data = {
-    service: form.querySelector('input[name="service"]:checked')?.value,
-    happy: form.querySelector('input[name="happy"]:checked')?.value,
-    rating: form.querySelector('input[name="rating"]:checked')?.value,
-    clean: form.querySelector('input[name="clean"]:checked')?.value,
-    staff: form.querySelector('input[name="staff"]:checked')?.value,
-    return: form.querySelector('input[name="return"]:checked')?.value,
-    liked: document.getElementById('liked').value.trim() || '—',
-    improve: document.getElementById('improve').value.trim() || '—'
-  };
-
-  try {
-    const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    });
-
-    if (res.ok) {
-      form.style.display = 'none';
-      thankyou.style.display = 'block';
-    } else {
-      alert('Something went wrong 💕');
-      btn.disabled = false;
-      btn.textContent = 'Submit My Feedback 💕';
-    }
-  } catch (err) {
-    alert('Network error 💕');
-    btn.disabled = false;
-    btn.textContent = 'Submit My Feedback 💕';
+  function showThankyou() {
+    form.style.display = 'none';
+    thankyou.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
-});
-</script>
 
+  // Remove error on selection
+  document.querySelectorAll('input[type="radio"]').forEach(input => {
+    input.addEventListener('change', () => {
+      const card = input.closest('.card');
+      if (card) card.classList.remove('has-error');
+    });
+  });
+</script>
 </body>
 </html>
