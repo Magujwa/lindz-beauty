@@ -491,10 +491,10 @@
     };
 
     // If no Formspree ID yet, just show thank you
-    if (FORMSPREE_ID === 'xaqlvpby') {
-      showThankyou();
-      return;
-    }
+if (!FORMSPREE_ID || FORMSPREE_ID === 'YOUR_FORM_ID') {
+  showThankyou();
+  return;
+}
 
     try {
       const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
