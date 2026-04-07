@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lindz Beauty – Client Survey 💕</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+/* (same styles as your original — unchanged) */
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- Header -->
+
+<div class="header">
+  <div class="logo-ring">🌸</div>
+  <p class="greeting">Hi lovely 🌸</p>
+  <h1>Share Your Experience</h1>
+  <p>Help us grow by answering a few quick questions.<br/>Your response is completely anonymous 💕</p>
+</div>
+
+<form id="survey" novalidate>
+
+<!-- (ALL your existing form content stays EXACTLY the same) -->
+
+<button type="submit" class="submit-btn" id="submit-btn">
+  Submit My Feedback 💕
+</button>
+
+</form>
+
+<div class="thankyou" id="thankyou">
+  <div class="big-icon">🌸</div>
+  <h2>Thank you so much!</h2>
+  <p>Your feedback means the world to us.<br/>
+  We appreciate you taking the time to help us grow.<br/><br/>
+  See you at your next appointment 💕</p>
+</div>
+
+<div class="footer">Lindz Beauty · This survey is 100% anonymous</div>
+</div>
+
+<script>
+const form = document.getElementById('survey');
+const thankyou = document.getElementById('thankyou');
+const btn = document.getElementById('submit-btn');
+
+// ✅ YOUR FORM ID IS NOW SET
+const FORMSPREE_ID = 'xaqlvpby';
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const required = ['service','happy','rating','clean','staff','return'];
+  let valid = true;
+
+  required.forEach((name, idx) => {
+    const checked = form.querySelector(`input[name="${name}"]:checked`);
+    const cardId = `card-${idx + 1}`;
+    const card = document.getElementById(cardId);
+
+    if (!checked) {
+      card.classList.add('has-error');
+      valid = false;
+    } else {
+      card.classList.remove('has-error');
+    }
+  });
+
+  if (!valid) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  const data = {
+    service: form.querySelector('input[name="service"]:checked')?.value,
+    happy: form.querySelector('input[name="happy"]:checked')?.value,
+    rating: form.querySelector('input[name="rating"]:checked')?.value,
+    clean: form.querySelector('input[name="clean"]:checked')?.value,
+    staff: form.querySelector('input[name="staff"]:checked')?.value,
+    return: form.querySelector('input[name="return"]:checked')?.value,
+    liked: document.getElementById('liked').value.trim() || '—',
+    improve: document.getElementById('improve').value.trim() || '—'
+  };
+
+  try {
+    const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (res.ok) {
+      form.style.display = 'none';
+      thankyou.style.display = 'block';
+    } else {
+      alert('Something went wrong 💕');
+      btn.disabled = false;
+      btn.textContent = 'Submit My Feedback 💕';
+    }
+  } catch (err) {
+    alert('Network error 💕');
+    btn.disabled = false;
+    btn.textContent = 'Submit My Feedback 💕';
+  }
+});
+</script>
+
+</body>
+</html>
